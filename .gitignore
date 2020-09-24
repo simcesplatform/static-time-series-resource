@@ -1,0 +1,5 @@
+.env
+.winenv
+.project
+.pydevproject
+.settings
