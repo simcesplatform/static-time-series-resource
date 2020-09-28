@@ -9,8 +9,13 @@ from tools.components import AbstractSimulationComponent
 from tools.tools import FullLogger, load_environmental_variables
 from tools.messages import ResourceStatesMessage
 
+from static_time_series_resource.data_source import CsvFileResourceStateSource 
+
 RESOURCE_STATES_TOPIC = "RESOURCE_STATES_TOPIC"
 RESOURCE_TYPE = "RESOURCE_TYPE"
+
+RESOURCE_STATE_CSV_FILE = "RESOURCE_STATE_CSV_FILE"
+RESOURCE_STATE_CSV_DELIMITER = "RESOURCE_STATE_CSV_DELIMITER"  
 
 ACCEPTED_RESOURCE_TYPES = [ "Load", "Generator" ]
 
@@ -21,11 +26,12 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
     classdocs
     '''
 
-    def __init__(self):
+    def __init__(self, stateSource: CsvFileResourceStateSource):
         '''
         Constructor
         '''
         super().__init__()
+        self._stateSource = stateSource
         environment = load_environmental_variables( 
             (RESOURCE_STATES_TOPIC, str, "ResourceStates"),
             ( RESOURCE_TYPE, str, None )
@@ -52,6 +58,7 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
         await self._rabbitmq_client.send_message(self._result_topic, resourceState.bytes())
         
     def _get_resource_states_message(self) -> ResourceStatesMessage:
+        state = self._stateSource.getNextEpochData()
         message = ResourceStatesMessage(
             SimulationId = self.simulation_id,
             Type = ResourceStatesMessage.CLASS_MESSAGE_TYPE,
@@ -59,15 +66,22 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
             MessageId = next(self._message_id_generator),
             EpochNumber = self._latest_epoch,
             TriggeringMessageIds = self._triggering_message_ids,
-            Bus = "bus1",
-            RealPower = 100.0,
-            ReactivePower = 10.0
+            Bus = state.bus,
+            RealPower = state.real_power,
+            ReactivePower = state.reactive_power,
+            Node = state.node
             )
         
         return message
 
 async def start_component():
-    resource = StaticTimeSeriesResource()
+    environment = load_environmental_variables(
+        ( RESOURCE_STATE_CSV_FILE, str ),
+        ( RESOURCE_STATE_CSV_DELIMITER, str, "," )
+        )
+    
+    stateSource = CsvFileResourceStateSource( environment[RESOURCE_STATE_CSV_FILE], environment[RESOURCE_STATE_CSV_DELIMITER]) 
+    resource = StaticTimeSeriesResource(stateSource)
     await resource.start()
     while not resource.is_stopped:
         await asyncio.sleep( 2 )
