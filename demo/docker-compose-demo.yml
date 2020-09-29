@@ -118,7 +118,30 @@ services:
       - RESOURCE_TYPE=Load
     volumes:
       - simulation_logs:/logs
-      - ${PWD}/load1.csv:/data.csv
+      - ./load1.csv:/data.csv
+    networks:
+      - rabbitmq_network_static_resource_demo
+
+  generator1:
+    image: static_time_series_resource:0.1.0
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: generator1
+    restart: "no"
+    depends_on:
+      - rabbitmq
+    env_file:
+      - env/components_common.env
+      - env/components_rabbitmq.env
+      - env/resource.env
+    environment:
+      - SIMULATION_COMPONENT_NAME=generator1
+      - SIMULATION_LOG_FILE=logs/logfile_generator1.log
+      - RESOURCE_TYPE=Generator
+    volumes:
+      - simulation_logs:/logs
+      - ./generator1.csv:/data.csv
     networks:
       - rabbitmq_network_static_resource_demo
 

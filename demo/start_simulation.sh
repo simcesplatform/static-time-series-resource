@@ -10,7 +10,7 @@ do
 done
 
 # Stop the LogWriter and any still running simulation components
-components="log_writer manager load1"
+components="log_writer manager load1 generator1"
 for component_name in ${components}
 do
     for container_id in $(docker ps | grep ${component_name} --max-count=1 | cut --delimiter=' ' --fields=1)
