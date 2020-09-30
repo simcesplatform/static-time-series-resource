@@ -7,11 +7,11 @@ import asyncio
 
 from tools.components import AbstractSimulationComponent
 from tools.tools import FullLogger, load_environmental_variables
-from tools.messages import ResourceStatesMessage
+from tools.messages import ResourceStateMessage
 
 from static_time_series_resource.data_source import CsvFileResourceStateSource 
 
-RESOURCE_STATES_TOPIC = "RESOURCE_STATES_TOPIC"
+RESOURCE_STATE_TOPIC = "RESOURCE_STATE_TOPIC"
 RESOURCE_TYPE = "RESOURCE_TYPE"
 
 RESOURCE_STATE_CSV_FILE = "RESOURCE_STATE_CSV_FILE"
@@ -33,7 +33,7 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
         super().__init__()
         self._stateSource = stateSource
         environment = load_environmental_variables( 
-            (RESOURCE_STATES_TOPIC, str, "ResourceStates"),
+            (RESOURCE_STATE_TOPIC, str, "ResourceState"),
             ( RESOURCE_TYPE, str, None )
             )
         self._type = environment[ RESOURCE_TYPE ]
@@ -41,27 +41,27 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
             # cannot continue do something 
             pass
         
-        self._resource_states_topic = environment[ RESOURCE_STATES_TOPIC ]
-        self._result_topic = '.'.join( [ self._resource_states_topic, self._type, self.component_name ])
+        self._resource_state_topic = environment[ RESOURCE_STATE_TOPIC ]
+        self._result_topic = '.'.join( [ self._resource_state_topic, self._type, self.component_name ])
         
     async def start_epoch(self) -> bool:
         if not await super().start_epoch():
             return False
         
         LOGGER.info( 'Starting epoch.' )
-        await self._send_resource_states_message()
+        await self._send_resource_state_message()
         
         return True
     
-    async def _send_resource_states_message(self):
-        resourceState = self._get_resource_states_message()
+    async def _send_resource_state_message(self):
+        resourceState = self._get_resource_state_message()
         await self._rabbitmq_client.send_message(self._result_topic, resourceState.bytes())
         
-    def _get_resource_states_message(self) -> ResourceStatesMessage:
+    def _get_resource_state_message(self) -> ResourceStateMessage:
         state = self._stateSource.getNextEpochData()
-        message = ResourceStatesMessage(
+        message = ResourceStateMessage(
             SimulationId = self.simulation_id,
-            Type = ResourceStatesMessage.CLASS_MESSAGE_TYPE,
+            Type = ResourceStateMessage.CLASS_MESSAGE_TYPE,
             SourceProcessId = self.component_name,
             MessageId = next(self._message_id_generator),
             EpochNumber = self._latest_epoch,
