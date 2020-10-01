@@ -21,7 +21,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-The component is based on the AbstractSimulationCompoment class from the [simulation-tools](procemplus/simulation-tools)
+The component is based on the AbstractSimulationCompoment class from the [simulation-tools](https://git.ain.rd.tut.fi/procemplus/simulation-tools)
  repository. It is configured via environment variables which include common variables for all AbstractSimulationComponent subclasses such as rabbitmq connection and component name. Environment variables specific to this component are listed below:
  
 - RESOURCE_STATE_TOPIC (optional): The upper level topic under whose subtopics the resource states are published. If this environment variable is not present ResourceState is used.
@@ -39,7 +39,7 @@ Docker can be used with the included docker file
 
 ## Demo
 
-The [demo](demo) directory includes everything required for running a docker compose based demo with this component which uses  all other base simulation platform components: simulation manager, log writer and log reader. It is based on a [similar demo](procemplus/simulation-manager/docker-files) 
+The [demo](demo) directory includes everything required for running a docker compose based demo with this component which uses  all other base simulation platform components: simulation manager, log writer and log reader. It is based on a [similar demo](https://git.ain.rd.tut.fi/procemplus/simulation-manager/-/tree/master/docker-files) 
 for the simulation manager which uses dummy componets. This demo assumes that all required simulation platform repositories including this one are cloned under the same parent directory. A test simulation can then be launched from the demo directory by running:
 
     ./start_simulation.sh
