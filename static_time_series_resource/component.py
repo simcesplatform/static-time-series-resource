@@ -1,7 +1,6 @@
+# -*- coding: utf-8 -*-
 '''
-Created on 23.9.2020
-
-@author: hylli
+Contains class for a simulation platform component used to simulate simple loads and generators whose published states are determined by a file containing a simple time series of attribute values for each epoch.
 '''
 import asyncio
 
@@ -11,24 +10,25 @@ from tools.messages import ResourceStateMessage
 
 from static_time_series_resource.data_source import CsvFileResourceStateSource 
 
+# names of used environment variables
 RESOURCE_STATE_TOPIC = "RESOURCE_STATE_TOPIC"
 RESOURCE_TYPE = "RESOURCE_TYPE"
-
 RESOURCE_STATE_CSV_FILE = "RESOURCE_STATE_CSV_FILE"
 RESOURCE_STATE_CSV_DELIMITER = "RESOURCE_STATE_CSV_DELIMITER"  
 
+# allowed values for resource type
 ACCEPTED_RESOURCE_TYPES = [ "Load", "Generator" ]
 
 LOGGER = FullLogger( __name__ )
 
 class StaticTimeSeriesResource(AbstractSimulationComponent):
     '''
-    classdocs
+    A simulation platform component used to simulate simple loads and generators whose published states are determined by a file containing a simple time series of attribute values for each epoch.
     '''
 
     def __init__(self, stateSource: CsvFileResourceStateSource):
         '''
-        Constructor
+        Create a component which uses the given csv state source for its published resource states.
         '''
         super().__init__()
         self._stateSource = stateSource
@@ -42,22 +42,32 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
             pass
         
         self._resource_state_topic = environment[ RESOURCE_STATE_TOPIC ]
+        # publish resource states to this topic
         self._result_topic = '.'.join( [ self._resource_state_topic, self._type, self.component_name ])
         
     async def start_epoch(self) -> bool:
+        '''
+        Handle the start of an epoch by publishing the resource state for the epoch.
+        '''
         if not await super().start_epoch():
             return False
         
-        LOGGER.info( 'Starting epoch.' )
+        LOGGER.debug( 'Starting epoch.' )
         await self._send_resource_state_message()
         
         return True
     
     async def _send_resource_state_message(self):
+        '''
+        Sends a ResourceState message for the current epoch.
+        '''
         resourceState = self._get_resource_state_message()
         await self._rabbitmq_client.send_message(self._result_topic, resourceState.bytes())
         
     def _get_resource_state_message(self) -> ResourceStateMessage:
+        '''
+        Create a ResourceStateMessage from the next resource state info available from the state source.
+        '''
         state = self._stateSource.getNextEpochData()
         message = ResourceStateMessage(
             SimulationId = self.simulation_id,
@@ -75,6 +85,10 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
         return message
 
 async def start_component():
+    '''
+    Start a StaticTimeSeriesResource component.
+    '''
+    # get information about the used source csv file and create a state source that uses it
     environment = load_environmental_variables(
         ( RESOURCE_STATE_CSV_FILE, str ),
         ( RESOURCE_STATE_CSV_DELIMITER, str, "," )
