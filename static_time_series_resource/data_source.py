@@ -15,7 +15,7 @@ class ResourceState():
     bus: str
     real_power: float
     reactive_power: float
-    node: str = None
+    node: int = None
     
 
 class CsvFileResourceStateSource():
