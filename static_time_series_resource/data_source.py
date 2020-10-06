@@ -41,6 +41,11 @@ class CsvFileResourceStateSource():
         bus = row["Bus"]
         node = row.get("Node")
         if node != None:
-            node = int( node ) 
+            if node == '':
+                node = None
+                
+            else:
+                node = int( node )
+                 
         state = ResourceState( bus = bus, real_power = real_power, reactive_power = reactive_power, node = node)
         return state
