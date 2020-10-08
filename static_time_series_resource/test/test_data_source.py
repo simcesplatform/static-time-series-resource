@@ -5,7 +5,7 @@ Tests for the state_source module.
 import unittest
 import pathlib
 
-from static_time_series_resource.data_source import ResourceState, CsvFileResourceStateSource 
+from static_time_series_resource.data_source import ResourceState, CsvFileResourceStateSource, CsvFileError 
 
 def getFilePath( fileName: str ) -> pathlib.Path:
     '''
@@ -48,6 +48,31 @@ class TestDataSource(unittest.TestCase):
                     result.append( stateSource.getNextEpochData())
                     
                 self.assertEqual( result, expected )
+                
+    def testMissingColumns(self):
+        '''
+        Check that missing RealPower, ReactivePower or Bus columns causes an exception.
+        '''
+        # each file has a different missing column
+        files = [ 'invalid_fields1.csv', 'invalid_fields2.csv', 'invalid_fields3.csv' ]
+        for file in files:
+            with self.subTest( file = file ):
+                with self.assertRaises( CsvFileError ) as cm:
+                    CsvFileResourceStateSource( getFilePath(file) )
+                
+                # check that exception message is the correct one.
+                self.assertTrue( str( cm.exception ).startswith( 'Resource state source csv file missing required columns:'), f'Exception message was {str( cm.exception )}.' )
+                
+    def testUnableToreadFile(self):
+        '''
+        Test that file not found raises the correct exception.
+        '''
+        with self.assertRaises( CsvFileError ) as cm:
+            CsvFileResourceStateSource( 'foo.csv' )
+            
+        message = str( cm.exception )
+        self.assertTrue( message.startswith( 'Unable to read file' ), f'Exception message was {message}.' )
+        
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testDataSource']
