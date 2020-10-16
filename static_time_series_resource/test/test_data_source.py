@@ -5,7 +5,8 @@ Tests for the state_source module.
 import unittest
 import pathlib
 
-from static_time_series_resource.data_source import ResourceState, CsvFileResourceStateSource, CsvFileError 
+from static_time_series_resource.data_source import ResourceState, CsvFileResourceStateSource, CsvFileError ,\
+    NoDataAvailableForEpoch
 
 def getFilePath( fileName: str ) -> pathlib.Path:
     '''
@@ -73,6 +74,22 @@ class TestDataSource(unittest.TestCase):
         message = str( cm.exception )
         self.assertTrue( message.startswith( 'Unable to read file' ), f'Exception message was {message}.' )
         
+    def test_invalid_values_and_no_more_data(self):
+        '''
+        Test that invalid values in csv cause an exception and when there are no more rows the correct exception is raised.
+        '''
+        stateSource = CsvFileResourceStateSource( getFilePath( 'invalid_values.csv'))
+        # each row has an invalid value for an attribute in the following order
+        invalidAttrs = [ 'RealPower', 'ReactivePower', 'Node' ]
+        for attr in invalidAttrs:
+            with self.assertRaises( ValueError, msg = f'{attr} should have an invalid value.' ) as cm:
+                stateSource.getNextEpochData()
+                
+            message = str( cm.exception )
+            self.assertIn( attr, message, 'Should contain the name of the invalid attribute.')
+            
+        with self.assertRaises(NoDataAvailableForEpoch):
+            stateSource.getNextEpochData()
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testDataSource']
