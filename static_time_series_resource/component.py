@@ -84,10 +84,7 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
         
         return message
 
-async def start_component():
-    '''
-    Start a StaticTimeSeriesResource component.
-    '''
+def create_component() -> StaticTimeSeriesResource:
     # get information about the used source csv file and create a state source that uses it
     environment = load_environmental_variables(
         ( RESOURCE_STATE_CSV_FILE, str ),
@@ -95,7 +92,13 @@ async def start_component():
         )
     
     stateSource = CsvFileResourceStateSource( environment[RESOURCE_STATE_CSV_FILE], environment[RESOURCE_STATE_CSV_DELIMITER]) 
-    resource = StaticTimeSeriesResource(stateSource)
+    return StaticTimeSeriesResource(stateSource)
+
+async def start_component():
+    '''
+    Start a StaticTimeSeriesResource component.
+    '''
+    resource = create_component() 
     await resource.start()
     while not resource.is_stopped:
         await asyncio.sleep( 2 )
