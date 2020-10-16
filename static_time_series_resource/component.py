@@ -85,6 +85,9 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
         return message
 
 def create_component() -> StaticTimeSeriesResource:
+    '''
+    Create a StaticTimeSeries resource initialized with a csv file resource state source.
+    '''
     # get information about the used source csv file and create a state source that uses it
     environment = load_environmental_variables(
         ( RESOURCE_STATE_CSV_FILE, str ),
