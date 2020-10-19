@@ -53,7 +53,14 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
             return False
         
         LOGGER.debug( 'Starting epoch.' )
-        await self._send_resource_state_message()
+        try:
+            await self._send_resource_state_message()
+            
+        except Exception as error:
+            description = f'Unable to create or send a ResourceState message: {str( error )}'
+            LOGGER.error( description )
+            await self.send_error_message(description)
+            return False
         
         return True
     
