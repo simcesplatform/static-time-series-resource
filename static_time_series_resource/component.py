@@ -8,7 +8,7 @@ from tools.components import AbstractSimulationComponent
 from tools.tools import FullLogger, load_environmental_variables
 from tools.messages import ResourceStateMessage
 
-from static_time_series_resource.data_source import CsvFileResourceStateSource 
+from static_time_series_resource.data_source import CsvFileResourceStateSource, CsvFileError 
 
 # names of used environment variables
 RESOURCE_STATE_TOPIC = "RESOURCE_STATE_TOPIC"
@@ -26,21 +26,31 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
     A simulation platform component used to simulate simple loads and generators whose published states are determined by a file containing a simple time series of attribute values for each epoch.
     '''
 
-    def __init__(self, stateSource: CsvFileResourceStateSource):
+    def __init__(self, stateSource: CsvFileResourceStateSource, initialization_error = None ):
         '''
         Create a component which uses the given csv state source for its published resource states.
         '''
         super().__init__()
         self._stateSource = stateSource
+        self.initialization_error = initialization_error
+        if self._stateSource == None and self.initialization_error == None:
+            self.initialization_error = 'Did not receive a csv file resource state source.'
+            
         environment = load_environmental_variables( 
             (RESOURCE_STATE_TOPIC, str, "ResourceState"),
             ( RESOURCE_TYPE, str, None )
             )
         self._type = environment[ RESOURCE_TYPE ]
-        if self._type == None or self._type not in ACCEPTED_RESOURCE_TYPES:
-            # cannot continue do something 
-            pass
+        if self._type == '' or self._type not in ACCEPTED_RESOURCE_TYPES:
+            if self._type == '':
+                self.initialization_error = f'Required environment variable {RESOURCE_TYPE} was missing.'
+                
+            else:
+                self.initialization_error = f'Environment variable {RESOURCE_TYPE} had an invalid value "{self._type}" for resource type. Accepted values: {", ".join( ACCEPTED_RESOURCE_TYPES )}.'
         
+        if self.initialization_error != None:
+            LOGGER.error( self.initialization_error )
+            
         self._resource_state_topic = environment[ RESOURCE_STATE_TOPIC ]
         # publish resource states to this topic
         self._result_topic = '.'.join( [ self._resource_state_topic, self._type, self.component_name ])
@@ -101,8 +111,15 @@ def create_component() -> StaticTimeSeriesResource:
         ( RESOURCE_STATE_CSV_DELIMITER, str, "," )
         )
     
-    stateSource = CsvFileResourceStateSource( environment[RESOURCE_STATE_CSV_FILE], environment[RESOURCE_STATE_CSV_DELIMITER]) 
-    return StaticTimeSeriesResource(stateSource)
+    try:
+        stateSource = CsvFileResourceStateSource( environment[RESOURCE_STATE_CSV_FILE], environment[RESOURCE_STATE_CSV_DELIMITER])
+        initialization_error = None
+        
+    except CsvFileError as error:
+        stateSource = None
+        initialization_error = f'Unable to create a csv file resource state source for the component: {str( error )}'
+         
+    return StaticTimeSeriesResource(stateSource, initialization_error )
 
 async def start_component():
     '''
