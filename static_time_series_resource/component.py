@@ -33,7 +33,7 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
         super().__init__()
         self._stateSource = stateSource
         self.initialization_error = initialization_error
-        if self._stateSource == None and self.initialization_error == None:
+        if self._stateSource is None and self.initialization_error is None:
             self.initialization_error = 'Did not receive a csv file resource state source.'
 
         environment = load_environmental_variables(
