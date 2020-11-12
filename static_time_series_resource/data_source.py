@@ -83,7 +83,7 @@ class CsvFileResourceStateSource():
         for column, attr, dataType, canBeNone in validation_info:
             value = row.get( column )
             if canBeNone and value == None:
-                # only Node can have None since presence of other fields is checked in init
+                # only Node can have None since presence of other fields is checked in init_tools
                 values[attr] = None
                     
             elif canBeNone and value == '': 

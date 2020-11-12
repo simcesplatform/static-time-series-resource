@@ -1,3 +1,4 @@
-[submodule "simulation-tools"]
-	path = simulation-tools
-	url = https://git.ain.rd.tut.fi/procemplus/simulation-tools.git
+[submodule "domain-messages"]
+	path = domain-messages
+	url = https://git.ain.rd.tut.fi/procemplus/domain-messages.git
+	branch = master

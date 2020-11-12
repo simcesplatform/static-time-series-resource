@@ -6,7 +6,7 @@ import asyncio
 
 from tools.components import AbstractSimulationComponent
 from tools.tools import FullLogger, load_environmental_variables
-from tools.messages import ResourceStateMessage
+from domain_messages.resource import ResourceStateMessage
 
 from static_time_series_resource.data_source import CsvFileResourceStateSource, CsvFileError
 

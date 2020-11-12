@@ -7,7 +7,8 @@ from typing import List, Tuple, Union, cast
 import os 
 import pathlib
 
-from tools.messages import AbstractMessage, ResourceStateMessage
+from tools.messages import AbstractMessage
+from domain_messages.resource import ResourceStateMessage 
 
 from tools.tests.components import MessageGenerator, TestAbstractSimulationComponent
 
