@@ -2,3 +2,7 @@
 	path = domain-messages
 	url = https://git.ain.rd.tut.fi/procemplus/domain-messages.git
 	branch = master
+[submodule "domain-tools"]
+	path = domain-tools
+	url = https://git.ain.rd.tut.fi/procemplus/domain-tools.git
+	branch = master

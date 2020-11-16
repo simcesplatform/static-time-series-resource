@@ -8,7 +8,7 @@ from tools.components import AbstractSimulationComponent
 from tools.tools import FullLogger, load_environmental_variables
 from domain_messages.resource import ResourceStateMessage
 
-from static_time_series_resource.data_source import CsvFileResourceStateSource, CsvFileError
+from domain_tools.resource.resource_state_source  import CsvFileResourceStateSource, CsvFileError
 
 # names of used environment variables
 RESOURCE_STATE_TOPIC = "RESOURCE_STATE_TOPIC"

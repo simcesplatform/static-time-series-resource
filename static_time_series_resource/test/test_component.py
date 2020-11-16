@@ -13,8 +13,7 @@ from domain_messages.resource import ResourceStateMessage
 from tools.tests.components import MessageGenerator, TestAbstractSimulationComponent
 
 from static_time_series_resource.component import create_component, RESOURCE_TYPE, RESOURCE_STATE_CSV_FILE 
-from static_time_series_resource.data_source import ResourceState 
-
+from domain_tools.resource.resource_state_source import ResourceState 
 
 class ResourceStateMessageGenerator( MessageGenerator ):
     """Message generator for the tests. extended to produce the expected ResourceState messages."""
