@@ -1,0 +1,4 @@
+RealPower,ReactivePower,Bus,Node
+-10,-1,bus1,
+-11.5,-2.0,bus1,1
+-9.1,0,bus1,2

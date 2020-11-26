@@ -20,9 +20,9 @@ class ResourceStateMessageGenerator( MessageGenerator ):
     
     # resource states that are the basis of the expected messages 
     states = [ None, # nothing for epoch 0
-          ResourceState( real_power = -10, reactive_power = -1, bus = 'bus1', node = None ),
+          ResourceState( real_power = -10.0, reactive_power = -1.0, bus = 'bus1', node = None ),
           ResourceState( real_power = -11.5, reactive_power = -2.0, bus = 'bus1', node = 1 ),
-          ResourceState( real_power = -9.1, reactive_power = 0, bus = 'bus1', node = 2 )
+          ResourceState( real_power = -9.1, reactive_power = 0.0, bus = 'bus1', node = 2 )
       ]
 
     def get_resource_state_message(self, epoch_number: int, triggering_message_ids: List[str]) -> Union[ResourceStateMessage, None]:
