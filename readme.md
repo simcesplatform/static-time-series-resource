@@ -37,6 +37,20 @@ The component can be launched with:
 
 Docker can be used with the included docker file
 
+## Tests
+
+The included unittests can be executed with:
+
+    python -m unittest
+
+This requires RabbitMQ connection information provided via environment variables as required by the AbstractSimulationComponent class. Tests can also be executed with docker compose:
+
+    docker-compose -f docker-compose.test.yml up
+    
+After executing tests exit with ctrl-c and remove the test environment:
+
+    docker-compose -f docker-compose.test.yml down -v
+
 ## Demo
 
 The [demo](demo) directory includes everything required for running a docker compose based demo with this component which uses  all other base simulation platform components: simulation manager, log writer and log reader. It is based on a [similar demo](https://git.ain.rd.tut.fi/procemplus/simulation-manager/-/tree/master/docker-files) 
