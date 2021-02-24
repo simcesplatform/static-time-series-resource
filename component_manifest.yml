@@ -11,3 +11,7 @@ Attributes:
     ResourceStateFile:
         Environment: RESOURCE_STATE_CSV_FILE
         Optional: false
+    ResourceFileDelimiter:
+        Environment: RESOURCE_STATE_CSV_DELIMITER
+        Optional: true
+        Default: ","
