@@ -45,11 +45,11 @@ The included unittests can be executed with:
 
 This requires RabbitMQ connection information provided via environment variables as required by the AbstractSimulationComponent class. Tests can also be executed with docker compose:
 
-    docker-compose -f docker-compose.test.yml up
+    docker-compose -f docker-compose-test.yml up
     
 After executing tests exit with ctrl-c and remove the test environment:
 
-    docker-compose -f docker-compose.test.yml down -v
+    docker-compose -f docker-compose-test.yml down -v
 
 ## Demo
 
