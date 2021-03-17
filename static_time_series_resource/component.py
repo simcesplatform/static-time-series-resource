@@ -26,7 +26,7 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
     A simulation platform component used to simulate simple loads and generators whose published states are determined by a file containing a simple time series of attribute values for each epoch.
     '''
 
-    def __init__(self, stateSource: CsvFileResourceStateSource, initialization_error = None ):
+    def __init__(self, stateSource: CsvFileResourceStateSource, initialization_error: str = None ):
         '''
         Create a component which uses the given csv state source for its published resource states.
         '''
