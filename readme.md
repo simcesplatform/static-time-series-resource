@@ -29,7 +29,7 @@ The component is based on the AbstractSimulationCompoment class from the [simula
 - RESOURCE_STATE_CSV_FILE (required): Location of the csv file which contains the resource state information used in the simulation. Relative file paths are in relation to the current working directory.
 - RESOURCE_STATE_CSV_DELIMITER (optional): Delimiter used in the csv file. The default is ,
 
-The csv file should contain columns named after the ResourceState message attributes: RealPower, ReactivePower, Bus and Node. The Node column is optional. Each row containing values will then represent data for one epoch. There should be at least as many data rows as there will be epochs. 
+The csv file should contain columns named after the ResourceState message attributes: RealPower, ReactivePower, CustomerId and Node. The Node column is optional. Each row containing values will then represent data for one epoch. There should be at least as many data rows as there will be epochs. 
 
 The component can be launched with:
 
