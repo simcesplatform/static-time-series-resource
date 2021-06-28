@@ -90,7 +90,7 @@ class StaticTimeSeriesResource(AbstractSimulationComponent):
             MessageId = next(self._message_id_generator),
             EpochNumber = self._latest_epoch,
             TriggeringMessageIds = self._triggering_message_ids,
-            CustomerId = state.customer_id,
+            CustomerId = state.customerid,
             RealPower = state.real_power,
             ReactivePower = state.reactive_power,
             Node = state.node
