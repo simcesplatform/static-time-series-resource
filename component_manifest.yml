@@ -3,7 +3,7 @@
 Name: StaticTimeSeriesResource
 Type: platform
 Description: "Static Time Series Resource component for the SimCes Platform"
-DockerImage: procem.ain.rd.tut.fi/simces/static_time_series_resource
+DockerImage: ghcr.io/simcesplatform/static-time-series-resource
 Attributes:
     ResourceType:
         Environment: RESOURCE_TYPE

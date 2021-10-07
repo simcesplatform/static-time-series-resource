@@ -1,8 +1,8 @@
 [submodule "domain-messages"]
 	path = domain-messages
-	url = https://git.ain.rd.tut.fi/procemplus/domain-messages.git
+	url = https://github.com/simcesplatform/domain-messages.git
 	branch = master
 [submodule "domain-tools"]
 	path = domain-tools
-	url = https://git.ain.rd.tut.fi/procemplus/domain-tools.git
+	url = https://github.com/simcesplatform/domain-tools.git
 	branch = master

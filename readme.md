@@ -21,7 +21,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-The component is based on the AbstractSimulationCompoment class from the [simulation-tools](https://git.ain.rd.tut.fi/procemplus/simulation-tools)
+The component is based on the AbstractSimulationCompoment class from the [simulation-tools](https://github.com/simcesplatform/simulation-tools)
  repository. It is configured via environment variables which include common variables for all AbstractSimulationComponent subclasses such as rabbitmq connection and component name. Environment variables specific to this component are listed below:
  
 - RESOURCE_STATE_TOPIC (optional): The upper level topic under whose subtopics the resource states are published. If this environment variable is not present ResourceState is used.
@@ -50,12 +50,3 @@ This requires RabbitMQ connection information provided via environment variables
 After executing tests exit with ctrl-c and remove the test environment:
 
     docker-compose -f docker-compose-test.yml down -v
-
-## Demo
-
-The [demo](demo) directory includes everything required for running a docker compose based demo with this component which uses  all other base simulation platform components: simulation manager, log writer and log reader. It is based on a [similar demo](https://git.ain.rd.tut.fi/procemplus/simulation-manager/-/tree/master/docker-files) 
-for the simulation manager which uses dummy componets. This demo assumes that all required simulation platform repositories including this one are cloned under the same parent directory. A test simulation can then be launched from the demo directory by running:
-
-    ./start_simulation.sh
-
-Simulation parameters can be changed by modifying the env files in the env directory. The simulation includes two resources called load1 and generator1. The resource state data they use are in the load1.csv and generator1.csv files. The simulation includes 5 epochs.     
